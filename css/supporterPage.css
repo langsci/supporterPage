@@ -1,0 +1,23 @@
+/**
+ * @file plugins/generic/supporterPage/css/supporterPage.css
+ *
+ * Copyright (c) 2016 Language Science Press
+ * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ *
+ */
+
+h2 {
+	margin-top: 27px !important;
+}
+
+ol {
+	padding-left: 30px;
+}
+
+#supporterPageSettings #prominentUsers {
+	background-color:#eee;
+	padding:10px !important;
+	border: 1px solid #999;
+	margin-bottom: 20px;
+}
+
