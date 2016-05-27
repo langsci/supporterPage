@@ -35,10 +35,10 @@ class SupporterPageDAO extends DAO {
 		}	
 	}
 
-	function getSupporters($supporterGroupId) {
+	function getSupporters($supporterGroupId,$locale) {
 
 		$result = $this->retrieve(
-			"select a.user_id, a.salutation, a.first_name, a.last_name, a.url, c.setting_value as affiliation, b.user_group_id from users a left join user_user_groups b left join user_settings c on b.user_id=c.user_id on b.user_id=a.user_id where b.user_group_id=".$supporterGroupId." and c.locale='en_US' and c.setting_name='affiliation'"
+			"select a.user_id, a.salutation, a.first_name, a.last_name, a.url, c.setting_value as affiliation, b.user_group_id from users a left join user_user_groups b left join user_settings c on b.user_id=c.user_id on b.user_id=a.user_id where b.user_group_id=".$supporterGroupId." and c.locale='".$locale."' and c.setting_name='affiliation'"
 		);
 
 		if ($result->RecordCount() == 0) {
