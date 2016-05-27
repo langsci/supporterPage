@@ -22,23 +22,25 @@ class SupporterPageHandler extends Handler {
 		$locale = AppLocale::getLocale();
 		$supporterPageDAO = new SupporterPageDAO;
 		$supporterGroupId = $supporterPageDAO->getUserGroupIdByName('Supporter',$request->getContext()->getId());
-		$supporters = $supporterPageDAO->getSupporters($supporterGroupId,$locale);
-		$prominentUsers = $supporterPageDAO->getProminentSupporters();
-
-		$section1 = array();
-		$section2 = array();
-		for ($i=0; $i<sizeof($supporters); $i++) {
-			if (in_array($supporters[$i]['id'],$prominentUsers)) {
-				$section1[] = $supporters[$i];
-			} else {
-				$section2[] = $supporters[$i];
-			}
-		} 
-		$rankedSupporters = array_merge($section1,$section2);
+		if ($supporterGroupId) {
+			$supporters = $supporterPageDAO->getSupporters($supporterGroupId,$locale);
+			$prominentUsers = $supporterPageDAO->getProminentSupporters();
+			$section1 = array();
+			$section2 = array();
+			for ($i=0; $i<sizeof($supporters); $i++) {
+				if (in_array($supporters[$i]['id'],$prominentUsers)) {
+					$section1[] = $supporters[$i];
+				} else {
+					$section2[] = $supporters[$i];
+				}
+			} 
+			$rankedSupporters = array_merge($section1,$section2);
+		} else {
+			$rankedSupporters=array();
+		}
 
 		$templateMgr = TemplateManager::getManager($request);
 		$templateMgr->assign('pageTitle', 'plugins.generic.title.supporterPage');
-		$templateMgr->assign('supporterGroupId', $supporterGroupId);
 		$templateMgr->assign('prominentUsers', $prominentUsers);
 		$templateMgr->assign('baseUrl',$request->getBaseUrl());
 		$templateMgr->assign('rankedSupporters', $rankedSupporters);
