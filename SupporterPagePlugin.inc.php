@@ -35,9 +35,8 @@ class SupporterPagePlugin extends GenericPlugin {
 		$templateMgr = TemplateManager::getManager($request);
 
 		$page = $args[0];
-		$op = $args[1];
-		if ($page == 'community' && in_array($op, array('supporters'))) {
-
+		if ($page == 'supporters') {
+			$args[1] =$page;
 			define('SUPPORTERPAGE_PLUGIN_NAME', $this->getName());
 			define('HANDLER_CLASS', 'SupporterPageHandler');
 			$this->import('SupporterPageHandler');
