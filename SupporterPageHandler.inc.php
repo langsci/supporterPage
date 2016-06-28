@@ -22,6 +22,7 @@ class SupporterPageHandler extends Handler {
 		$locale = AppLocale::getLocale();
 		$supporterPageDAO = new SupporterPageDAO;
 		$supporterGroupId = $supporterPageDAO->getUserGroupIdByName('Supporter',$request->getContext()->getId());
+		$prominentUsers = array();
 		if ($supporterGroupId) {
 			$supporters = $supporterPageDAO->getSupporters($supporterGroupId,$locale);
 			$prominentUsers = $supporterPageDAO->getProminentSupporters();
