@@ -41,6 +41,7 @@ class SupporterPageHandler extends Handler {
 		}
 
 		$templateMgr = TemplateManager::getManager($request);
+		$this->setupTemplate($request); // important for getting the correct menue		
 		$templateMgr->assign('pageTitle', 'plugins.generic.title.supporterPage');
 		$templateMgr->assign('prominentUsers', $prominentUsers);
 		$templateMgr->assign('baseUrl',$request->getBaseUrl());
