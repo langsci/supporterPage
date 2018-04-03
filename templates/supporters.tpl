@@ -16,8 +16,8 @@
 
 <ol>
 	{foreach from=$rankedSupporters item=user}
-	    <li>{if $user.url}<a href="{$user.url}">{/if}{$user.firstName} {$user.lastName}{if $user.url}</a>{/if}{if $user.salutation}, {$user.salutation}{/if}
-			{if $user.affiliation}({$user.affiliation}){/if}
+	    <li>{if $user.url}<a href="{$user.url|strip_unsafe_html}">{/if}{$user.firstName|strip_unsafe_html} {$user.lastName|strip_unsafe_html}{if $user.url}</a>{/if}{if $user.salutation}, {$user.salutation|strip_unsafe_html}{/if}
+			{if $user.affiliation}({$user.affiliation|strip_unsafe_html}){/if}
 		</li>
 	{/foreach}
 </ol>
