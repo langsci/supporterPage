@@ -1,5 +1,5 @@
 - Supporter Page Plugin
-- Version: 2.0
+- Version: 2.0.1.0
 - Author: Carola Fanselow, Ronald Steffen
 
 About
