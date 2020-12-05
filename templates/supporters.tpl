@@ -1,8 +1,9 @@
 {**
  * plugins/generic/supporterPage/templates/supporters.tpl
  *
- * Copyright (c) 2016 Language Science Press
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2020 Language Science Press
+ * Developed by Ronald Steffen
+ * Distributed under the MIT license. For full terms see the file docs/License.
  *
  *
  *}
@@ -16,12 +17,11 @@
 
 <ol>
 	{foreach from=$rankedSupporters item=user}
-	    <li>{if $user.url}<a href="{$user.url|strip_unsafe_html}">{/if}{$user.firstName|strip_unsafe_html} {$user.lastName|strip_unsafe_html}{if $user.url}</a>{/if}{if $user.salutation}, {$user.salutation|strip_unsafe_html}{/if}
+	    <li>{if $user.url}<a href="{$user.url|strip_unsafe_html}">{/if}{$user.givenName|strip_unsafe_html} {$user.familyName|strip_unsafe_html}{if $user.url}</a>{/if}{if $user.salutation}, {$user.salutation|strip_unsafe_html}{/if}
 			{if $user.affiliation}({$user.affiliation|strip_unsafe_html}){/if}
 		</li>
 	{/foreach}
 </ol>
 
 {include file="frontend/components/footer.tpl"}
-
 

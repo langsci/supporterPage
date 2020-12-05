@@ -2,12 +2,12 @@ Key data
 ============
 
 - name of the plugin: Supporter Page Plugin
-- author: Carola Fanselow
-- current version: 1.0
-- tested on OMP version: 1.2.0
+- author: Carola Fanselow, Ronald Steffen
+- current version: 2.0.1.0
+- tested on OMP version: 3.2.1
 - github link: https://github.com/langsci/supporterPage.git
 - community plugin: no
-- date: 2016/05/25
+- date: 2020/12/05
 
 Description
 ============
@@ -33,7 +33,7 @@ Templates
 ---------
 - templates that replace other templates: 0
 - templates that are modified with template hooks: 0
-- new/additional templates: 1
+- new/additional templates: 2
 
 		supporter.tpl
 		settingsForm.tpl
@@ -47,14 +47,11 @@ Database access, server access
 		user_user_groups
 		user_group_settings
 
-- writing access to OMP tables: 0
-- new tables: 1
+- writing access to OMP tables: 1
 
-		langsci_prominent_users
+		user_settings
 
-- nonrecurring server access: yes
-
-		creating table langsci_prominent_users during installation
+- nonrecurring server access: no
 
 - recurring server access: no
  
@@ -82,8 +79,7 @@ Classes, plugins, external software
  
 Metrics
 --------
-- number of files: 13
-- lines of code: 756
+- number of files: 12
 
 Settings
 --------

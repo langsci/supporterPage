@@ -1,6 +1,6 @@
 - Supporter Page Plugin
-- Version: 1.0
-- Author: Carola Fanselow
+- Version: 2.0
+- Author: Carola Fanselow, Ronald Steffen
 
 About
 -----
@@ -8,18 +8,24 @@ This plugin lists all Language Science Press Supporters with salutation, first n
 
 License
 -------
-Copyright (c) 2016 Language Science Press
+Copyright (c) 2020 Language Science Press
 This plugin is licensed under the GNU General Public License v2. 
 
 System Requirements
 -------------------
 This plugin is compatible with...
- - OMP 1.2.0
+ - OMP 3.2.1
 
 Installation
 ------------
 To install the plugin:
  - Upload the tar.gz file in OMP (Management > Website Settings > Plugins > Generic Plugins)
+ 
+Update
+------------
+To update the database from privious plugin versions execute the following SQL statement:
+
+`insert into user_settings (user_id, setting_name, setting_value, setting_type) select user_id,'prominentSupporter','1','string' from langsci_prominent_supporters;`
 
 Support
 ---------------

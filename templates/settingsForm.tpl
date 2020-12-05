@@ -1,8 +1,9 @@
 {**
  * @file plugins/generic/supporterPage/templates/settingsForm.tpl
  *
- * Copyright (c) 2016 Language Science Press
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2020 Language Science Press
+ * Developed by Ronald Steffen
+ * Distributed under the MIT license. For full terms see the file docs/License.
  *
  *}
 
@@ -29,9 +30,9 @@
 </div>
 
 <form class="pkp_form" id="supporterPageSettingsForm" method="post" action="{url router=$smarty.const.ROUTE_COMPONENT op="manage" category="generic" plugin=$pluginName verb="settings" save=true}">
-
+	{csrf}
+	{include file="common/formErrors.tpl"}
 	{fbvFormArea id="seriesOverviewSettingsFormArea"}
-
 		{fbvFormSection list=true}
 			<span>{translate key="plugins.generic.supporterPage.settings.addIntro"}</span>
 			{fbvElement type="text" id="add" value=$add size=$fbvStyles.size.SMALL}
@@ -41,10 +42,8 @@
 			<span>{translate key="plugins.generic.supporterPage.settings.removeIntro"}</span>
 			{fbvElement type="text" id="remove" value=$remove size=$fbvStyles.size.SMALL}
 		{/fbvFormSection}
-
 	{/fbvFormArea}
-
-	{fbvFormButtons}
+	{fbvFormButtons submitText="common.save"}
 </form>
 
 <p><span class="formRequired">{translate key="common.requiredField"}</span></p>

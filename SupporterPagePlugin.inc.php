@@ -3,8 +3,9 @@
 /**
  * @file plugins/generic/supporterPage/SupporterPagePlugin.inc.php
  *
- * Copyright (c) 2016 Language Science Press
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2020 Language Science Press
+ * Developed by Ronald Steffen
+ * Distributed under the MIT license. For full terms see the file docs/License.
  *
  * @class SupporterPagePlugin
  *
@@ -15,18 +16,19 @@ import('lib.pkp.classes.plugins.GenericPlugin');
 class SupporterPagePlugin extends GenericPlugin {
 
 
-	function register($category, $path) {
+    function register($category, $path, $mainContextId = NULL) {
 			
-		if (parent::register($category, $path)) {
-			$this->addLocaleData();
-			
-			if ($this->getEnabled()) {
-				HookRegistry::register ('LoadHandler', array(&$this, 'handleSupporterPageRequest'));
-			}
+        if (parent::register($category, $path, $mainContextId)) {
+            if ($this->getEnabled($mainContextId)) {
+    			$this->addLocaleData();
+    			
+    			if ($this->getEnabled()) {
+    				HookRegistry::register ('LoadHandler', array(&$this, 'handleSupporterPageRequest'));
+    			}
+            }
 			return true;
 		}
 		return false;
-
 	}
 
 	function handleSupporterPageRequest($hookName, $args) {
@@ -41,10 +43,10 @@ class SupporterPagePlugin extends GenericPlugin {
 			define('HANDLER_CLASS', 'SupporterPageHandler');
 			$this->import('SupporterPageHandler');
 			return true;
-		} 
+		}		
 		return false;
 	}
-
+	
 	/**
 	 * @see Plugin::getActions()
 	 */
@@ -74,6 +76,11 @@ class SupporterPagePlugin extends GenericPlugin {
 		switch ($request->getUserVar('verb')) {
 			case 'settings':
 				$context = $request->getContext();
+				
+				AppLocale::requireComponents(LOCALE_COMPONENT_APP_COMMON,  LOCALE_COMPONENT_PKP_MANAGER);
+				$templateMgr = TemplateManager::getManager($request);
+				$templateMgr->registerPlugin('function', 'plugin_url', array($this, 'smartyPluginUrl'));
+				
 				$this->import('SettingsForm');
 				$form = new SettingsForm($this, $context->getId());
 
@@ -100,14 +107,14 @@ class SupporterPagePlugin extends GenericPlugin {
 		return __('plugins.generic.supporterPage.description');
 	}
 
-	function getTemplatePath() {
-		return parent::getTemplatePath() . 'templates/';
+	/**
+	 * Get the name of the settings file to be installed on new context
+	 * creation.
+	 * @return string
+	 */
+	function getContextSpecificPluginSettingsFile() {
+	    return $this->getPluginPath() . '/settings.xml';
 	}
-
-	function getInstallSchemaFile() {
-		return $this->getPluginPath() . '/schema.xml';
-	}
-
 }
 
 ?>

@@ -4,16 +4,17 @@
 <!--
   * version.xml
   *
-  * Copyright (c) 2016 Language Science Press
-  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2020 Language Science Press
+ * Developed by Ronald Steffen
+ * Distributed under the MIT license. For full terms see the file docs/License.
   *
   * Supporter Page Plugin
   -->
 <version>
 	<application>supporterPage</application>
 	<type>plugins.generic</type>
-	<release>1.0.1.0</release>
-	<date>2015-04-06</date>
+	<release>2.0.1.0</release>
+	<date>2020-12-05</date>
 	<lazy-load>1</lazy-load>
 	<sitewide>0</sitewide>
 	<class>SupporterPagePlugin</class>

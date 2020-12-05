@@ -1,0 +1,38 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2020-12-05T11:38:15+00:00\n"
+"PO-Revision-Date: 2020-12-05T11:38:15+00:00\n"
+"Language: \n"
+
+msgid "plugins.generic.supporterPage.displayName"
+msgstr "Supporter Page Plugin"
+
+msgid "plugins.generic.supporterPage.description"
+msgstr "Displays all supporters of Language Science Press"
+
+msgid "plugins.generic.title.supporterPage"
+msgstr "LangSci Supporters"
+
+msgid "plugins.generic.supporterPage.intro"
+msgstr ""
+"<p>The people listed below are supporters of Language Science Press. If you want to join as well, <a href=\"user/register\">register with Language Science Press</a> and choose the appropriate option.</p>\n"
+""
+
+msgid "plugins.generic.supporterPage.settings.intro"
+msgstr "The following users are currently ranked as promiment:"
+
+msgid "plugins.generic.supporterPage.settings.addIntro"
+msgstr "Enter a user name to add it to the prominent list."
+
+msgid "plugins.generic.supporterPage.settings.removeIntro"
+msgstr "Enter a user name to remove it from the prominent list."
+
+msgid "plugins.generic.supporterPage.settings"
+msgstr "Settings"

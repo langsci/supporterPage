@@ -3,8 +3,9 @@
 /**
  * @file plugins/generic/supporterPage/SettingsForm.inc.php
  *
- * Copyright (c) 2016 Language Science Press
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2020 Language Science Press
+ * Developed by Ronald Steffen
+ * Distributed under the MIT license. For full terms see the file docs/License.
  *
  * @class SettingsForm
  */
@@ -17,20 +18,21 @@ class SettingsForm extends Form {
 	/** @var int Associated context ID */
 	private $_contextId;
 
-	/** @var WebFeedPlugin Web feed plugin */
+	/** @var SupporterPagePlugin object */
 	private $_plugin;
 
 	/**
 	 * Constructor
-	 * @param $plugin WebFeedPlugin Web feed plugin
+	 * @param $plugin SupporterPagePlugin object
 	 * @param $contextId int Context ID
 	 */
-	function SettingsForm($plugin, $contextId) {
+	function __construct($plugin, $contextId) {
 		$this->_contextId = $contextId;
 		$this->_plugin = $plugin;
-
-		parent::Form($plugin->getTemplatePath() . 'settingsForm.tpl');
+		
+		parent::__construct($plugin->getTemplateResource('settingsForm.tpl'));
 		$this->addCheck(new FormValidatorPost($this));
+		$this->addCheck(new FormValidatorCSRF($this));
 	}
 
 	/**
@@ -57,21 +59,22 @@ class SettingsForm extends Form {
 	 * Fetch the form.
 	 * @copydoc Form::fetch()
 	 */
-	function fetch($request) {
+	function fetch($request, $template = NULL, $display = false) {
 		$templateMgr = TemplateManager::getManager($request);
 		$templateMgr->assign('pluginName', $this->_plugin->getName());
+		
 		return parent::fetch($request);
 	}
 
 	/**
 	 * Save settings. 
 	 */
-	function execute() {
+	function execute(...$functionArgs) {
 		$plugin = $this->_plugin;
 		$contextId = $this->_contextId;
 		$supporterPageDAO = new SupporterPageDAO;
-		$supporterPageDAO->addProminentUser(trim($this->getData('add')));
-		$supporterPageDAO->removeProminentUser($this->getData('remove'));
+		$supporterPageDAO->addProminentUser(trim($this->getData('add')), $this->_plugin->getCurrentContextId());
+		$supporterPageDAO->removeProminentUser($this->getData('remove'), $this->_plugin->getCurrentContextId());
 	}
 }
 

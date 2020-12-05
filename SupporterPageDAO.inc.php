@@ -3,8 +3,9 @@
 /**
  * @file plugins/generic/supporterPage/SupporterPageDAO.inc.php
  *
- * Copyright (c) 2016 Language Science Press
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2020 Language Science Press
+ * Developed by Ronald Steffen
+ * Distributed under the MIT license. For full terms see the file docs/License.
  *
  * @class SupporterPageDAO
  *
@@ -13,14 +14,14 @@
 
 class SupporterPageDAO extends DAO {
 
-	function SupporterPageDAO() {
-		parent::DAO();
+    function __construct() {
+		parent::__construct();
 	}
 
-	function getUserGroupIdByName($user_group_name) {
+	function getUserGroupIdByName($user_group_name, $locale) {
 		$result = $this->retrieve(
 			"SELECT user_group_id FROM user_group_settings WHERE
-				locale='en_US' AND
+				locale='".$locale."' AND
 				setting_name = 'name' AND
 				setting_value = '" . $user_group_name . "'"
 		);
@@ -35,11 +36,16 @@ class SupporterPageDAO extends DAO {
 		}	
 	}
 
-	function getSupporters($supporterGroupId,$locale) {
-
+	function getSupporters($locale) {
+	   
+	    $supporterGroupId = $this->getUserGroupIdByName('Supporter',$locale);
+	    
+	    $start = Core::microtime();
+	    
 		$result = $this->retrieve(
-			"SELECT a.user_id, a.salutation, a.first_name, a.last_name, a.url, c.setting_value AS affiliation, b.user_group_id FROM users a LEFT JOIN user_user_groups b LEFT JOIN user_settings c ON b.user_id=c.user_id on b.user_id=a.user_id WHERE b.user_group_id=".$supporterGroupId." AND c.locale='".$locale."' AND c.setting_name='affiliation'"
-		);
+			"SELECT a.user_id FROM users a LEFT JOIN user_user_groups b ON b.user_id=a.user_id WHERE 
+                b.user_group_id=".$supporterGroupId
+		    );
 
 		if ($result->RecordCount() == 0) {
 			$result->Close();
@@ -49,24 +55,33 @@ class SupporterPageDAO extends DAO {
 			$i = 0;
 			while (!$result->EOF) {
 				$row = $result->getRowAssoc(false);
+
+				$userDao = DAORegistry::getDAO('UserDAO');
+				$user = $userDao->getById($this->convertFromDB($row['user_id'],null));
+				
 				$supporters[$i]['id'] = $this->convertFromDB($row['user_id'],null);
-				$supporters[$i]['salutation'] = $this->convertFromDB($row['salutation'],null);
-				$supporters[$i]['firstName'] = $this->convertFromDB($row['first_name'],null);
-				$supporters[$i]['lastName'] = $this->convertFromDB($row['last_name'],null);
-				$supporters[$i]['url'] = $this->convertFromDB($row['url'],null);
-				$supporters[$i]['affiliation'] = $this->convertFromDB($row['affiliation'],null);
+				$supporters[$i]['salutation'] = $user->getPreferredPublicName($locale);
+				$supporters[$i]['givenName'] = $user->getGivenName($locale);
+				$supporters[$i]['familyName'] = $user->getFamilyName($locale);
+				$supporters[$i]['url'] = $user->getUrl();
+				$supporters[$i]['affiliation'] = $user->getAffiliation($locale);
 				$i++;		 
 				$result->MoveNext();
 			}
 			$result->Close();
+			
+			error_log("RS_DEBUG:".basename(__FILE__).":".__FUNCTION__.":SQL execution time: ".print_r(Core::microtime()-$start,true));
 			return $supporters;
 		}
 	}
 
-	function getProminentSupporters() {
+	function getProminentSupporters($locale) {
+	    
+	    $supporterGroupId = $this->getUserGroupIdByName('Supporter',$locale);
 
-		$result = $this->retrieve(
-			"SELECT user_id FROM langsci_prominent_supporters");
+	    $result = $this->retrieve(
+	        "SELECT a.user_id FROM users a LEFT JOIN user_user_groups b ON b.user_id=a.user_id JOIN user_settings c ON a.user_id=c.user_id WHERE b.user_group_id=".$supporterGroupId." and c.setting_name='prominentSupporter'  and c.setting_value='1';"
+	        );
 
 		if ($result->RecordCount() == 0) {
 			$result->Close();
@@ -85,54 +100,32 @@ class SupporterPageDAO extends DAO {
 
 	function getProminentSupportersUsernames() {
 
-		$result = $this->retrieve(
-			"SELECT b.username FROM langsci_prominent_supporters a LEFT JOIN users b ON a.user_id=b.user_id ORDER BY b.username");
-
-		if ($result->RecordCount() == 0) {
-			$result->Close();
-			return array();
-		} else {
-			$prominentUsers = array();
-			while (!$result->EOF) {
-				$row = $result->getRowAssoc(false);
-				$prominentUsers[] = $this->convertFromDB($row['username'],null);	 
-				$result->MoveNext();
-			}
-			$result->Close();
-			return $prominentUsers;
-		}
+	    $supporterGroupId = $this->getUserGroupIdByName('Supporter');
+	    $userDao = DAORegistry::getDAO('UserDAO');
+	    $prominentUsers = [];
+	    foreach ($this->getProminentSupporters($supporterGroupId) as $userID) {
+	        $prominentUsers[] = $userDao->getById($userID)->getUserName();
+	    }
+	    
+		return $prominentUsers;
+	}
+	
+	function addProminentUser($username, $context) {	 
+	    $userDao = DAORegistry::getDAO('UserDAO');
+	    $user = $userDao->getByUsername($username, false);
+	    $userSettingsDao = DAORegistry::getDAO('UserSettingsDAO');
+	    if ($user != NULL) {
+	        $userSettingsDao->updateByAssoc($user->getID(), 'prominentSupporter', '1', 'string', null, null);
+	    }
 	}
 
-	function addProminentUser($username) {
-
-		$result = $this->retrieve("SELECT user_id FROM users WHERE username='".$username."'");
-
-		if ($result->RecordCount() == 0) {
-			$result->Close();	 
-			return false;
-		} else {
-			$row = $result->getRowAssoc(false);
-			$userId = $this->convertFromDB($row['user_id'],null);
-			$result->Close();
- 			$this->update('INSERT INTO langsci_prominent_supporters (user_id) VALUES('.$userId.')');
-			return true;
-		}
-	}
-
-	function removeProminentUser($username) {
-
-		$result = $this->retrieve("SELECT user_id FROM users WHERE username='".$username."'");
-
-		if ($result->RecordCount() == 0) {
-			$result->Close();	 
-			return false;
-		} else {
-			$row = $result->getRowAssoc(false);
-			$userId = $this->convertFromDB($row['user_id'],null);
-			$result->Close();
- 			$this->update('DELETE FROM langsci_prominent_supporters WHERE user_id='.$userId);
-			return true;
-		}
+	function removeProminentUser($username, $context) {
+	    $userDao = DAORegistry::getDAO('UserDAO');
+	    $user = $userDao->getByUsername($username, false);
+	    $userSettingsDao = DAORegistry::getDAO('UserSettingsDAO');
+	    if ($user != NULL) {
+	        $userSettingsDao->deleteByAssoc($user->getID(), 'prominentSupporter', null, null);
+	    }
 	}
 }
 
