@@ -32,10 +32,6 @@ class SupporterPagePlugin extends GenericPlugin {
 	}
 
 	function handleSupporterPageRequest($hookName, $args) {
-
-		$request = $this->getRequest();
-		$templateMgr = TemplateManager::getManager($request);
-
 		$page = $args[0];
 		if ($page == 'supporters') {
 			$args[1] =$page;

@@ -19,16 +19,18 @@ import('plugins.generic.supporterPage.SupporterPageDAO');
 class SupporterPageHandler extends Handler {	
 
 	function supporters($args, $request) {
-	    
 	    $supporterPagePlugin = PluginRegistry::getPlugin('generic', SUPPORTERPAGE_PLUGIN_NAME);
-	    
-	    $templateMgr = TemplateManager::getManager($request);
-	    $this->setupTemplate($request); // important for getting the correct menue
-	    $templateMgr->setCaching(Smarty::CACHING_LIFETIME_SAVED);
-	    $templateMgr->clearTemplateCache();
-	    $templateMgr->setCompileCheck(false);
-	    $templateMgr->setCacheLifetime(24*60*60);
-	    //TODO RS figure out why isCached() is not working -> there are hints this is a bug solved by upgrading Smarty
+		$this->setupTemplate($request); // important for getting the correct menue
+		$templateMgr = TemplateManager::getManager($request);
+		
+		//TODO @RS when caching is enabled user menu is not set correctly
+		// -> disable for now
+		//$templateMgr->setCaching(Smarty::CACHING_LIFETIME_SAVED);
+	    //$templateMgr->clearTemplateCache();
+	    //$templateMgr->setCompileCheck(false);
+	    //$templateMgr->setCacheLifetime(24*60*60);
+		
+		//TODO @RS figure out why isCached() is not working -> there are hints this is a bug solved by upgrading Smarty
 	    if (!$templateMgr->isCached('../../../plugins/generic/supporterPage/templates/supporters.tpl')) {
 	        error_log("RS_DEBUG:".basename(__FILE__).":".__FUNCTION__.":??? ".print_r("IS NOT CACHED !!!",true));
     		$locale = AppLocale::getLocale();
@@ -56,7 +58,7 @@ class SupporterPageHandler extends Handler {
 
 		$templateMgr->assign('pageTitle', 'plugins.generic.title.supporterPage');
 		$templateMgr->assign('baseUrl',$request->getBaseUrl());
-		$templateMgr->assign('intro', __('plugins.generic.supporterPage.intro'));
+		$templateMgr->assign('intro', __('plugins.generic.supporterPage.intro')); 
 		
         $start = Core::microtime();        
 		$templateMgr->display($supporterPagePlugin->getTemplateResource('supporters.tpl'));
