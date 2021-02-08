@@ -20,6 +20,7 @@ Installation
 ------------
 To install the plugin:
  - Upload the tar.gz file in OMP (Management > Website Settings > Plugins > Generic Plugins)
+ - enbale SupporterPage Plugin frontend view by creating a Remote-URL menu entry pointing at `http://<your monograph domain name and main path>/supporters`
  
 Update
 ------------
