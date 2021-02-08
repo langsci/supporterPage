@@ -43,7 +43,7 @@ class SettingsForm extends Form {
 		$plugin = $this->_plugin;
 
 		$supporterPageDAO = new SupporterPageDAO;
-		$prominentUsers = $supporterPageDAO->getProminentSupportersUsernames();
+		$prominentUsers = $supporterPageDAO->getProminentSupportersUsernames(AppLocale::getLocale());
 
 		$this->setData('prominentUsers', $prominentUsers);
 	}

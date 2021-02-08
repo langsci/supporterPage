@@ -98,12 +98,10 @@ class SupporterPageDAO extends DAO {
 		}
 	}
 
-	function getProminentSupportersUsernames() {
-
-	    $supporterGroupId = $this->getUserGroupIdByName('Supporter');
+	function getProminentSupportersUsernames($locale) {
 	    $userDao = DAORegistry::getDAO('UserDAO');
 	    $prominentUsers = [];
-	    foreach ($this->getProminentSupporters($supporterGroupId) as $userID) {
+	    foreach ($this->getProminentSupporters($locale) as $userID) {
 	        $prominentUsers[] = $userDao->getById($userID)->getUserName();
 	    }
 	    
