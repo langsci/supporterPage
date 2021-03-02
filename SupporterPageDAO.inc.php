@@ -40,7 +40,11 @@ class SupporterPageDAO extends DAO {
 	   
 	    $supporterGroupId = $this->getUserGroupIdByName('Supporter',$locale);
 	    
-	    $start = Core::microtime();
+		// enable or disable profiling
+		$profiling = false;
+		if ($profiling) {
+			$startFunction = Core::microtime();
+		}
 	    
 		$result = $this->retrieve(
 			"SELECT a.user_id FROM users a LEFT JOIN user_user_groups b ON b.user_id=a.user_id WHERE 
@@ -70,7 +74,9 @@ class SupporterPageDAO extends DAO {
 			}
 			$result->Close();
 			
-			error_log("RS_DEBUG:".basename(__FILE__).":".__FUNCTION__.":SQL execution time: ".print_r(Core::microtime()-$start,true));
+			if ($profiling) {
+				error_log("RS_DEBUG:".basename(__FILE__).":".__FUNCTION__.":SQL execution time: ".print_r(Core::microtime()-$start,true));
+			}
 			return $supporters;
 		}
 	}

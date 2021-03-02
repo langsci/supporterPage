@@ -19,20 +19,18 @@ import('plugins.generic.supporterPage.SupporterPageDAO');
 class SupporterPageHandler extends Handler {	
 
 	function supporters($args, $request) {
+
+		// enable or disable profiling
+		$profiling = false;
+		if ($profiling) {
+			$startFunction = Core::microtime();
+		}
+
 	    $supporterPagePlugin = PluginRegistry::getPlugin('generic', SUPPORTERPAGE_PLUGIN_NAME);
 		$this->setupTemplate($request); // important for getting the correct menue
+
 		$templateMgr = TemplateManager::getManager($request);
 		
-		//TODO @RS when caching is enabled user menu is not set correctly
-		// -> disable for now
-		//$templateMgr->setCaching(Smarty::CACHING_LIFETIME_SAVED);
-	    //$templateMgr->clearTemplateCache();
-	    //$templateMgr->setCompileCheck(false);
-	    //$templateMgr->setCacheLifetime(24*60*60);
-		
-		//TODO @RS figure out why isCached() is not working -> there are hints this is a bug solved by upgrading Smarty
-	    if (!$templateMgr->isCached('../../../plugins/generic/supporterPage/templates/supporters.tpl')) {
-	        error_log("RS_DEBUG:".basename(__FILE__).":".__FUNCTION__.":??? ".print_r("IS NOT CACHED !!!",true));
     		$locale = AppLocale::getLocale();
 			$supporterPageDAO = new SupporterPageDAO;
     		$supporterGroupId = $supporterPageDAO->getUserGroupIdByName('Supporter',$locale);
@@ -50,19 +48,37 @@ class SupporterPageHandler extends Handler {
     				}
     			} 
     			$rankedSupporters = array_merge($section1,$section2);
+				$htmlList = "";
+				foreach ($rankedSupporters as $user) {
+					$htmlList = $htmlList . "<li>";
+					if ($user['url']) {
+						$htmlList = $htmlList . "<a href=\"" . strip_tags($user['url']) . "\">";
+					}
+					$htmlList = $htmlList . strip_tags($user['givenName']) . " " . strip_tags($user['familyName']);
+					if ($user['url']) {
+						$htmlList = $htmlList . "</a>";
+					}
+					if ($user['salutation']) $htmlList = $htmlList . strip_tags($user['salutation']);
+					if ($user['affiliation']) $htmlList = $htmlList . strip_tags($user['affiliation']);
+					$htmlList = $htmlList . "</li>";
+				}
     		} else {
     			$rankedSupporters=array();
     		}
-    		$templateMgr->assign('rankedSupporters', $rankedSupporters);
-	    }
+    		$templateMgr->assign('htmlList', $htmlList);
 
 		$templateMgr->assign('pageTitle', 'plugins.generic.title.supporterPage');
 		$templateMgr->assign('baseUrl',$request->getBaseUrl());
 		$templateMgr->assign('intro', __('plugins.generic.supporterPage.intro')); 
 		
-        $start = Core::microtime();        
+		if ($profiling) {
+        	$start = Core::microtime();       
+		} 
 		$templateMgr->display($supporterPagePlugin->getTemplateResource('supporters.tpl'));
-		error_log("RS_DEBUG:".basename(__FILE__).":".__FUNCTION__.":Smarty execution time: ".print_r(Core::microtime()-$start,true));
+		if ($profiling) {
+			error_log("RS_DEBUG:".basename(__FILE__).":".__FUNCTION__.":Smarty execution time: ".print_r(Core::microtime()-$start,true));
+			error_log("RS_DEBUG:".basename(__FILE__).":".__FUNCTION__.":Function execution time: ".print_r(Core::microtime()-$startFunction,true));
+		}
 	}
 
 }
