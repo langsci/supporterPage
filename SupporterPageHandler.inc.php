@@ -58,8 +58,8 @@ class SupporterPageHandler extends Handler {
 					if ($user['url']) {
 						$htmlList = $htmlList . "</a>";
 					}
-					if ($user['salutation']) $htmlList = $htmlList . strip_tags($user['salutation']);
-					if ($user['affiliation']) $htmlList = $htmlList . strip_tags($user['affiliation']);
+					if ($user['salutation']) $htmlList = $htmlList . ", " . strip_tags($user['salutation']);
+					if ($user['affiliation']) $htmlList = $htmlList . ", " . strip_tags($user['affiliation']);
 					$htmlList = $htmlList . "</li>";
 				}
     		} else {
